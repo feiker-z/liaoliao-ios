@@ -27,7 +27,30 @@ workflows:
           find . -name "libopencore-amrnb.a" -delete 2>/dev/null || true
           find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
           find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
+          # 删除Notification扩展目录
+          rm -rf NotificationContent NotificationService 2>/dev/null || true
           echo "清理完成"
+      - name: Remove Notification Extensions from Project
+        script: |
+          # 使用Python安全地移除Notification扩展引用
+          python3 -c "
+          import re
+          with open('TangSengDaoDaoiOS.xcodeproj/project.pbxproj', 'r') as f:
+              content = f.read()
+          # 移除包含NotificationContent或NotificationService的行
+          lines = content.split('\n')
+          filtered_lines = [line for line in lines if 'NotificationContent' not in line and 'NotificationService' not in line]
+          with open('TangSengDaoDaoiOS.xcodeproj/project.pbxproj', 'w') as f:
+              f.write('\n'.join(filtered_lines))
+          print('project.pbxproj清理完成')
+          "
+      - name: Update all Bundle IDs
+        script: |
+          # 更新主应用的Bundle ID
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
+          # 批量替换所有plist文件中的Bundle ID
+          find . -name "*.plist" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
+          echo "Bundle ID更新完成"
       - name: Build ipa for distribution
         script: |
           mkdir -p build/ios/xcarchive build/ios/ipa

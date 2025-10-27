@@ -23,6 +23,24 @@ post_install do |installer|
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
             config.build_settings['ENABLE_BITCODE'] = 'NO'
             config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+            
+            # 修复WuKongIMSDK的静态库问题
+            if target.name == 'WuKongIMSDK'
+              config.build_settings['OTHER_LDFLAGS'] ||= ['$(inherited)']
+              config.build_settings['LIBRARY_SEARCH_PATHS'] ||= ['$(inherited)']
+              # 排除有问题的静态库文件
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] ||= []
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] << 'libopencore-amrnb.a'
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] << 'libopencore-amrwb.a'
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] << 'libvo-amrwbenc.a'
+            end
+            
+            # 修复WuKongBase的BUILD文件问题
+            if target.name == 'WuKongBase'
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] ||= []
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] << 'BUILD'
+              config.build_settings['EXCLUDED_SOURCE_FILE_NAMES'] << '**/BUILD'
+            end
         end
         
     end
