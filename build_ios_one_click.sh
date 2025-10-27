@@ -47,17 +47,17 @@ echo "📱 检查可用的构建目标..."
 xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace -scheme WuKongChatiOS -showdestinations
 
 echo "🔨 开始构建..."
-# 使用模拟器构建，避免iOS SDK版本问题
+# 使用最简单的构建方法，不指定目标
 xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace \
   -scheme WuKongChatiOS \
   -config Release \
-  -destination "platform=iOS Simulator,name=iPhone 15,OS=latest" \
   -archivePath build/ios/xcarchive/TangSengDaoDaoiOS.xcarchive \
   archive COMPILER_INDEX_STORE_ENABLE=NO \
   CODE_SIGN_STYLE=Manual \
   CODE_SIGN_IDENTITY="" \
   CODE_SIGNING_REQUIRED=NO \
-  IPHONEOS_DEPLOYMENT_TARGET=12.0
+  IPHONEOS_DEPLOYMENT_TARGET=12.0 \
+  -allowProvisioningUpdates
 
 if [ $? -eq 0 ]; then
     echo "✅ 构建成功！"
