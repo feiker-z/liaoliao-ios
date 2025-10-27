@@ -30,7 +30,7 @@ jobs:
         cp certificates/描述文件.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
         # 导入证书
         security create-keychain -p "" build.keychain
-        security import certificates/证书文件.p12 -k build.keychain -P "1" -A
+        security import certificates/证书文件.p12 -k build.keychain -P 1 -A
         security list-keychains -s build.keychain
         security default-keychain -s build.keychain
         security unlock-keychain -p "" build.keychain
