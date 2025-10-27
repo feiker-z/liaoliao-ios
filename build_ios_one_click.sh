@@ -47,14 +47,16 @@ echo "📱 检查可用的构建目标..."
 xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace -scheme WuKongChatiOS -showdestinations
 
 echo "🔨 开始构建..."
+# 使用更简单的方法，不指定OS版本
 xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace \
   -scheme WuKongChatiOS \
   -config Release \
-  -destination "generic/platform=iOS,OS=latest" \
+  -destination "generic/platform=iOS" \
   -archivePath build/ios/xcarchive/TangSengDaoDaoiOS.xcarchive \
   archive COMPILER_INDEX_STORE_ENABLE=NO \
   -allowProvisioningUpdates \
-  CODE_SIGN_STYLE=Automatic
+  CODE_SIGN_STYLE=Automatic \
+  IPHONEOS_DEPLOYMENT_TARGET=12.0
 
 if [ $? -eq 0 ]; then
     echo "✅ 构建成功！"
