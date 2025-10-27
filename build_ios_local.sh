@@ -13,11 +13,16 @@ if [[ "$OSTYPE" != "darwin"* ]]; then
     exit 1
 fi
 
-# 检查Xcode是否安装
-if ! command -v xcodebuild &> /dev/null; then
-    echo "❌ 未找到Xcode，请先安装Xcode"
+# 检查描述文件
+echo "🔍 检查描述文件..."
+PROVISIONING_PROFILE=$(find . -name "*.mobileprovision" | head -1)
+if [ -z "$PROVISIONING_PROFILE" ]; then
+    echo "❌ 未找到描述文件(.mobileprovision)"
+    echo "📋 请参考 PROVISIONING_GUIDE.md 获取描述文件"
+    echo "💡 或者使用Codemagic在线构建（无需本地描述文件）"
     exit 1
 fi
+echo "✅ 找到描述文件: $PROVISIONING_PROFILE"
 
 # 进入项目目录
 cd "$(dirname "$0")"

@@ -1,0 +1,64 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Install CocoaPods
+      run: |
+        sudo gem install cocoapods
+        pod install
+    
+    - name: Setup Certificate
+      run: |
+        # 创建证书目录
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        # 复制描述文件
+        cp certificates/描述文件.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+        # 导入证书
+        security create-keychain -p "" build.keychain
+        security import certificates/证书文件.p12 -k build.keychain -P "1" -A
+        security list-keychains -s build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p "" build.keychain
+    
+    - name: Build IPA
+      run: |
+        # 设置Bundle ID
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
+        
+        # 构建
+        xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace \
+          -scheme WuKongChatiOS \
+          -config Release \
+          -archivePath build/TangSengDaoDaoiOS.xcarchive \
+          archive COMPILER_INDEX_STORE_ENABLE=NO \
+          CODE_SIGN_STYLE=Manual \
+          CODE_SIGN_IDENTITY="iPhone Distribution" \
+          PROVISIONING_PROFILE_SPECIFIER="00008130-001E4C3A02C3001CC9BXOL"
+        
+        # 导出IPA
+        xcodebuild -exportArchive \
+          -archivePath build/TangSengDaoDaoiOS.xcarchive \
+          -exportPath build/ipa \
+          -exportOptionsPlist export_options.plist
+    
+    - name: Upload IPA
+      uses: actions/upload-artifact@v3
+      with:
+        name: ios-app
+        path: build/ipa/*.ipa
