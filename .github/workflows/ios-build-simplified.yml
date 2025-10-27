@@ -1,0 +1,83 @@
+name: iOS Build - Optimized
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Clean and Prepare
+      run: |
+        # 清理有问题的文件
+        find . -name "libopencore-amrnb.a" -delete 2>/dev/null || true
+        find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
+        find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
+        find . -name "BUILD" -type f -delete 2>/dev/null || true
+        
+        # 移除扩展目录
+        rm -rf NotificationContent NotificationService 2>/dev/null || true
+        
+        echo "清理完成"
+    
+    - name: Install CocoaPods
+      run: |
+        sudo gem install cocoapods
+        pod install
+    
+    - name: Setup Certificate
+      run: |
+        # 创建证书目录
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        # 复制描述文件
+        cp certificates/描述文件.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+        echo "证书设置完成"
+    
+    - name: Build IPA
+      run: |
+        # 设置Bundle ID
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
+        
+        # 创建导出选项
+        cat > export_options.plist <<EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>method</key>
+            <string>ad-hoc</string>
+            <key>compileBitcode</key>
+            <false/>
+        </dict>
+        </plist>
+        EOF
+        
+        # 构建
+        xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace \
+          -scheme WuKongChatiOS \
+          -config Release \
+          -archivePath build/TangSengDaoDaoiOS.xcarchive \
+          archive COMPILER_INDEX_STORE_ENABLE=NO \
+          CODE_SIGN_STYLE=Automatic \
+          -allowProvisioningUpdates
+        
+        # 导出IPA
+        xcodebuild -exportArchive \
+          -archivePath build/TangSengDaoDaoiOS.xcarchive \
+          -exportPath build/ipa \
+          -exportOptionsPlist export_options.plist \
+          -allowProvisioningUpdates
+    
+    - name: Upload IPA
+      uses: actions/upload-artifact@v4
+      with:
+        name: 聊聊-iOS-App
+        path: build/ipa/*.ipa
