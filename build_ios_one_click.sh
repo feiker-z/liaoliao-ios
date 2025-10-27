@@ -35,16 +35,22 @@ rm -rf NotificationContent NotificationService 2>/dev/null || true
 echo "🔄 更新Bundle ID..."
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
 find . -name "*.plist" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
-sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' TangSengDaoDaoiOS.xcodeproj/project.pbxproj
+# 使用LC_ALL=C修复编码问题
+LC_ALL=C sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' TangSengDaoDaoiOS.xcodeproj/project.pbxproj
 
 # 创建构建目录
 mkdir -p build/ios/xcarchive build/ios/ipa
 
 echo "🔨 开始构建..."
+# 先检查可用的目标
+echo "📱 检查可用的构建目标..."
+xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace -scheme WuKongChatiOS -showdestinations
+
+echo "🔨 开始构建..."
 xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace \
   -scheme WuKongChatiOS \
   -config Release \
-  -destination "generic/platform=iOS" \
+  -destination "generic/platform=iOS,OS=latest" \
   -archivePath build/ios/xcarchive/TangSengDaoDaoiOS.xcarchive \
   archive COMPILER_INDEX_STORE_ENABLE=NO \
   -allowProvisioningUpdates \
