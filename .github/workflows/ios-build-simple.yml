@@ -41,12 +41,10 @@ jobs:
     
     - name: Build IPA
       run: |
-        # 设置所有Bundle ID
-        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
-        # 设置NotificationContent Bundle ID
-        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686.NotificationContent" "NotificationContent/Info.plist" 2>/dev/null || echo "NotificationContent not found, skipping"
-        # 设置NotificationService Bundle ID  
-        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686.NotificationService" "NotificationService/Info.plist" 2>/dev/null || echo "NotificationService not found, skipping"
+        # 批量替换Bundle ID
+        find . -name "*.plist" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
+        find . -name "*.pbxproj" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
+        echo "Bundle ID替换完成"
         
         # 创建导出选项
         cat > export_options.plist <<EOF
