@@ -17,6 +17,15 @@ jobs:
       with:
         xcode-version: latest-stable
     
+    - name: Clean problematic files
+      run: |
+        # 删除有问题的静态库文件
+        find . -name "libopencore-amrnb.a" -delete 2>/dev/null || true
+        find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
+        find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
+        find . -name "BUILD" -type f -delete 2>/dev/null || true
+        echo "清理完成"
+    
     - name: Install CocoaPods
       run: |
         sudo gem install cocoapods
@@ -32,8 +41,12 @@ jobs:
     
     - name: Build IPA
       run: |
-        # 设置Bundle ID
+        # 设置所有Bundle ID
         /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
+        # 设置NotificationContent Bundle ID
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686.NotificationContent" "NotificationContent/Info.plist" 2>/dev/null || echo "NotificationContent not found, skipping"
+        # 设置NotificationService Bundle ID  
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686.NotificationService" "NotificationService/Info.plist" 2>/dev/null || echo "NotificationService not found, skipping"
         
         # 创建导出选项
         cat > export_options.plist <<EOF
