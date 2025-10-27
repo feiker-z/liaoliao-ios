@@ -26,6 +26,10 @@ jobs:
         # 移除扩展目录
         rm -rf NotificationContent NotificationService 2>/dev/null || true
         
+        # 从project.pbxproj中彻底移除扩展引用
+        sed -i '' '/NotificationContent/d' TangSengDaoDaoiOS.xcodeproj/project.pbxproj 2>/dev/null || true
+        sed -i '' '/NotificationService/d' TangSengDaoDaoiOS.xcodeproj/project.pbxproj 2>/dev/null || true
+        
         echo "清理完成"
     
     - name: Install CocoaPods
