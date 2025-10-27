@@ -19,6 +19,15 @@ workflows:
       - name: Update Bundle ID
         script: |
           /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $BUNDLE_ID" "TangSengDaoDao/Info.plist"
+      - name: Clean problematic files
+        script: |
+          # 删除有问题的BUILD文件
+          find . -name "BUILD" -type f -delete 2>/dev/null || true
+          # 删除有问题的静态库文件
+          find . -name "libopencore-amrnb.a" -delete 2>/dev/null || true
+          find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
+          find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
+          echo "清理完成"
       - name: Build ipa for distribution
         script: |
           mkdir -p build/ios/xcarchive build/ios/ipa
