@@ -41,10 +41,9 @@ jobs:
     
     - name: Build IPA
       run: |
-        # 批量替换Bundle ID
-        find . -name "*.plist" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
-        find . -name "*.pbxproj" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
-        echo "Bundle ID替换完成"
+        # 安全地设置Bundle ID
+        /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
+        echo "Bundle ID设置完成"
         
         # 创建导出选项
         cat > export_options.plist <<EOF
