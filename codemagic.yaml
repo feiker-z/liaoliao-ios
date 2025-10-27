@@ -6,6 +6,7 @@ workflows:
       ios_signing:
         distribution_type: development
         bundle_identifier: app.article1307.danger1686
+        certificate_upload: manual
       vars:
         XCODE_WORKSPACE: "TangSengDaoDaoiOS.xcworkspace"
         XCODE_SCHEME: "WuKongChatiOS"
