@@ -28,13 +28,7 @@ jobs:
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
         # 复制描述文件
         cp certificates/描述文件.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-        # 导入证书
-        security create-keychain -p "" build.keychain
-        # 使用printf避免换行符问题
-        printf "1" | security import certificates/证书文件.p12 -k build.keychain -P /dev/stdin -A
-        security list-keychains -s build.keychain
-        security default-keychain -s build.keychain
-        security unlock-keychain -p "" build.keychain
+        echo "证书设置完成，使用自动签名"
     
     - name: Build IPA
       run: |
@@ -61,9 +55,8 @@ jobs:
           -config Release \
           -archivePath build/TangSengDaoDaoiOS.xcarchive \
           archive COMPILER_INDEX_STORE_ENABLE=NO \
-          CODE_SIGN_STYLE=Manual \
-          CODE_SIGN_IDENTITY="iPhone Distribution" \
-          PROVISIONING_PROFILE_SPECIFIER="00008130-001E4C3A02C3001CC9BXOL"
+          CODE_SIGN_STYLE=Automatic \
+          -allowProvisioningUpdates
         
         # 导出IPA
         xcodebuild -exportArchive \
