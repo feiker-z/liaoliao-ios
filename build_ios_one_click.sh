@@ -33,17 +33,13 @@ rm -rf NotificationContent NotificationService 2>/dev/null || true
 
 # 从project.pbxproj中彻底移除Notification扩展引用
 echo "🔧 清理project.pbxproj中的扩展引用..."
-python3 -c "
-import re
-with open('TangSengDaoDaoiOS.xcodeproj/project.pbxproj', 'r') as f:
-    content = f.read()
-# 移除包含NotificationContent或NotificationService的行
-lines = content.split('\n')
-filtered_lines = [line for line in lines if 'NotificationContent' not in line and 'NotificationService' not in line]
-with open('TangSengDaoDaoiOS.xcodeproj/project.pbxproj', 'w') as f:
-    f.write('\n'.join(filtered_lines))
-print('project.pbxproj清理完成')
-"
+# 使用更安全的方法：只移除特定的目标引用，保持文件结构
+# 备份原文件
+cp TangSengDaoDaoiOS.xcodeproj/project.pbxproj TangSengDaoDaoiOS.xcodeproj/project.pbxproj.backup
+# 使用grep和sed的组合来安全移除
+grep -v "NotificationContent\|NotificationService" TangSengDaoDaoiOS.xcodeproj/project.pbxproj > TangSengDaoDaoiOS.xcodeproj/project.pbxproj.tmp
+mv TangSengDaoDaoiOS.xcodeproj/project.pbxproj.tmp TangSengDaoDaoiOS.xcodeproj/project.pbxproj
+echo "project.pbxproj安全清理完成"
 
 # 更新Bundle ID
 echo "🔄 更新Bundle ID..."
