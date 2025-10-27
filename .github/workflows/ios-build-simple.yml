@@ -17,14 +17,14 @@ jobs:
       with:
         xcode-version: latest-stable
     
-    - name: Clean problematic files
+    - name: Remove Extension Targets
       run: |
-        # 删除有问题的静态库文件
-        find . -name "libopencore-amrnb.a" -delete 2>/dev/null || true
-        find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
-        find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
-        find . -name "BUILD" -type f -delete 2>/dev/null || true
-        echo "清理完成"
+        # 移除扩展目录
+        rm -rf NotificationContent NotificationService 2>/dev/null || true
+        # 从project.pbxproj中移除扩展引用
+        sed -i '' '/NotificationContent/d' TangSengDaoDaoiOS.xcodeproj/project.pbxproj 2>/dev/null || true
+        sed -i '' '/NotificationService/d' TangSengDaoDaoiOS.xcodeproj/project.pbxproj 2>/dev/null || true
+        echo "扩展目标已移除"
     
     - name: Install CocoaPods
       run: |
