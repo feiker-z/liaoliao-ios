@@ -44,6 +44,7 @@ echo "🔨 开始构建..."
 xcodebuild -workspace TangSengDaoDaoiOS.xcworkspace \
   -scheme WuKongChatiOS \
   -config Release \
+  -destination "generic/platform=iOS" \
   -archivePath build/ios/xcarchive/TangSengDaoDaoiOS.xcarchive \
   archive COMPILER_INDEX_STORE_ENABLE=NO \
   -allowProvisioningUpdates \
