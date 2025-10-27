@@ -36,6 +36,8 @@ workflows:
           /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
           # 批量替换所有plist文件中的Bundle ID
           find . -name "*.plist" -exec sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' {} \;
+          # 批量替换project.pbxproj中的Bundle ID
+          sed -i '' 's/com\.xinbida\.tangsengdaodao/app.article1307.danger1686/g' TangSengDaoDaoiOS.xcodeproj/project.pbxproj
           echo "Bundle ID更新完成"
       - name: Build ipa for distribution
         script: |
