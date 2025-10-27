@@ -31,6 +31,20 @@ find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
 find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
 rm -rf NotificationContent NotificationService 2>/dev/null || true
 
+# 从project.pbxproj中彻底移除Notification扩展引用
+echo "🔧 清理project.pbxproj中的扩展引用..."
+python3 -c "
+import re
+with open('TangSengDaoDaoiOS.xcodeproj/project.pbxproj', 'r') as f:
+    content = f.read()
+# 移除包含NotificationContent或NotificationService的行
+lines = content.split('\n')
+filtered_lines = [line for line in lines if 'NotificationContent' not in line and 'NotificationService' not in line]
+with open('TangSengDaoDaoiOS.xcodeproj/project.pbxproj', 'w') as f:
+    f.write('\n'.join(filtered_lines))
+print('project.pbxproj清理完成')
+"
+
 # 更新Bundle ID
 echo "🔄 更新Bundle ID..."
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier app.article1307.danger1686" "TangSengDaoDao/Info.plist"
