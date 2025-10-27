@@ -69,3 +69,4 @@ build/ios/ipa/TangSengDaoDaoiOS.ipa
 - **签名失败**: 检查Apple Developer账号和Bundle ID
 - **依赖安装失败**: 尝试 `pod repo update` 然后重新 `pod install`
 - **构建失败**: 检查Xcode版本和iOS部署目标
+

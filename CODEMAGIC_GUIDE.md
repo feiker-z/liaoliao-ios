@@ -28,3 +28,4 @@ git push -u origin main
 - **证书密码**: 1
 - **描述文件**: Ad Hoc类型
 - **设备UDID**: 00008130-001E4C3A02C3001C
+

@@ -28,3 +28,4 @@ workflows:
             --export-options-plist export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
+

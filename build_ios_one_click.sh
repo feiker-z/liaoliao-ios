@@ -31,15 +31,8 @@ find . -name "libopencore-amrwb.a" -delete 2>/dev/null || true
 find . -name "libvo-amrwbenc.a" -delete 2>/dev/null || true
 rm -rf NotificationContent NotificationService 2>/dev/null || true
 
-# 从project.pbxproj中彻底移除Notification扩展引用
-echo "🔧 清理project.pbxproj中的扩展引用..."
-# 使用更安全的方法：只移除特定的目标引用，保持文件结构
-# 备份原文件
-cp TangSengDaoDaoiOS.xcodeproj/project.pbxproj TangSengDaoDaoiOS.xcodeproj/project.pbxproj.backup
-# 使用grep和sed的组合来安全移除
-grep -v "NotificationContent\|NotificationService" TangSengDaoDaoiOS.xcodeproj/project.pbxproj > TangSengDaoDaoiOS.xcodeproj/project.pbxproj.tmp
-mv TangSengDaoDaoiOS.xcodeproj/project.pbxproj.tmp TangSengDaoDaoiOS.xcodeproj/project.pbxproj
-echo "project.pbxproj安全清理完成"
+# 不修改project.pbxproj，只清理文件
+echo "🔧 跳过project.pbxproj修改，保持项目结构完整"
 
 # 更新Bundle ID
 echo "🔄 更新Bundle ID..."
